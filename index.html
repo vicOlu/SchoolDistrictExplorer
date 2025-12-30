@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NJ School Districts Explorer</title>
+    <title>Best School Districts Explorer</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -77,6 +77,35 @@
         .logo-text span {
             font-size: 0.75rem;
             color: var(--text-muted);
+        }
+
+        .state-selector {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .state-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .state-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .state-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
         }
 
         .stats-bar {
@@ -317,7 +346,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            max-height: calc(100vh - 500px);
+            max-height: calc(100vh - 520px);
             overflow-y: auto;
         }
 
@@ -539,22 +568,22 @@
             <div class="logo">
                 <div class="logo-icon">🎓</div>
                 <div class="logo-text">
-                    <h1>NJ School Districts</h1>
-                    <span>Interactive Explorer</span>
+                    <h1>Best School Districts</h1>
+                    <span>Multi-State Explorer</span>
                 </div>
+            </div>
+            <div class="state-selector">
+                <button class="state-btn active" data-state="NJ">New Jersey</button>
+                <button class="state-btn" data-state="IN">Indiana</button>
             </div>
             <div class="stats-bar">
                 <div class="stat">
-                    <div class="stat-value">35</div>
+                    <div class="stat-value" id="districtCount">35</div>
                     <div class="stat-label">Districts</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">$780K</div>
-                    <div class="stat-label">Avg Home Price</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value">A+</div>
-                    <div class="stat-label">Top Grade</div>
+                    <div class="stat-value" id="avgPrice">$780K</div>
+                    <div class="stat-label">Avg Price</div>
                 </div>
             </div>
         </div>
@@ -596,13 +625,13 @@
                 </div>
                 <div class="price-range-container">
                     <div class="price-display">
-                        <span class="price-value" id="minPriceDisplay">$400K</span>
+                        <span class="price-value" id="minPriceDisplay">$200K</span>
                         <span class="price-value" id="maxPriceDisplay">$1.5M+</span>
                     </div>
                     <div class="range-slider">
                         <div class="range-track" id="rangeTrack"></div>
-                        <input type="range" id="minPrice" min="400" max="1500" value="400" step="50">
-                        <input type="range" id="maxPrice" min="400" max="1500" value="1500" step="50">
+                        <input type="range" id="minPrice" min="200" max="1500" value="200" step="50">
+                        <input type="range" id="maxPrice" min="200" max="1500" value="1500" step="50">
                     </div>
                 </div>
             </div>
@@ -615,11 +644,8 @@
                     </svg>
                     Region
                 </div>
-                <div class="region-chips">
-                    <button class="region-chip active" data-region="all">All NJ</button>
-                    <button class="region-chip" data-region="north">North</button>
-                    <button class="region-chip" data-region="central">Central</button>
-                    <button class="region-chip" data-region="south">South</button>
+                <div class="region-chips" id="regionChips">
+                    <!-- Populated by JS based on state -->
                 </div>
             </div>
 
@@ -647,7 +673,7 @@
                     <div class="legend-item"><div class="legend-dot" style="background: var(--grade-a)"></div><span>A Excellent</span></div>
                     <div class="legend-item"><div class="legend-dot" style="background: var(--grade-aminus)"></div><span>A- Very Good</span></div>
                     <div class="legend-item"><div class="legend-dot" style="background: var(--grade-bplus)"></div><span>B+ Good</span></div>
-                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-b)"></div><span>B Above Average</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-b)"></div><span>B Above Avg</span></div>
                 </div>
             </div>
         </div>
@@ -655,75 +681,163 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const schoolDistricts = [
-            { zip: "07627", town: "Demarest", district: "Northern Valley Regional HS", grade: "A+", price: 950, lat: 40.9576, lng: -73.9635, region: "north", county: "Bergen" },
-            { zip: "08540", town: "Princeton", district: "Princeton Public Schools", grade: "A+", price: 925, lat: 40.3573, lng: -74.6672, region: "central", county: "Mercer" },
-            { zip: "07078", town: "Short Hills", district: "Millburn Township Schools", grade: "A+", price: 1200, lat: 40.7401, lng: -74.3254, region: "north", county: "Essex" },
-            { zip: "07041", town: "Millburn", district: "Millburn Township Schools", grade: "A+", price: 1100, lat: 40.7259, lng: -74.3043, region: "north", county: "Essex" },
-            { zip: "08550", town: "West Windsor", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 750, lat: 40.2915, lng: -74.6282, region: "central", county: "Mercer" },
-            { zip: "07450", town: "Ridgewood", district: "Ridgewood Public Schools", grade: "A+", price: 1050, lat: 40.9793, lng: -74.1166, region: "north", county: "Bergen" },
-            { zip: "07901", town: "Summit", district: "Summit Public Schools", grade: "A+", price: 1150, lat: 40.7145, lng: -74.3576, region: "north", county: "Union" },
-            { zip: "07670", town: "Tenafly", district: "Tenafly Public Schools", grade: "A+", price: 1250, lat: 40.9176, lng: -73.9554, region: "north", county: "Bergen" },
-            { zip: "07928", town: "Chatham", district: "School District of the Chathams", grade: "A+", price: 950, lat: 40.7407, lng: -74.3826, region: "north", county: "Morris" },
-            { zip: "08033", town: "Haddonfield", district: "Haddonfield Public Schools", grade: "A+", price: 625, lat: 39.8915, lng: -75.0376, region: "south", county: "Camden" },
-            { zip: "07046", town: "Mountain Lakes", district: "Mountain Lakes Schools", grade: "A+", price: 875, lat: 40.8926, lng: -74.4326, region: "north", county: "Morris" },
-            { zip: "08057", town: "Moorestown", district: "Moorestown Township Schools", grade: "A+", price: 575, lat: 39.9687, lng: -74.9488, region: "south", county: "Burlington" },
-            { zip: "07039", town: "Livingston", district: "Livingston Board of Education", grade: "A+", price: 850, lat: 40.7879, lng: -74.3149, region: "north", county: "Essex" },
-            { zip: "07090", town: "Westfield", district: "Westfield Public Schools", grade: "A+", price: 1050, lat: 40.6517, lng: -74.3474, region: "north", county: "Union" },
-            { zip: "07974", town: "New Providence", district: "New Providence Schools", grade: "A+", price: 825, lat: 40.6984, lng: -74.4015, region: "north", county: "Union" },
-            { zip: "07920", town: "Basking Ridge", district: "Bernards Township Schools", grade: "A+", price: 900, lat: 40.7115, lng: -74.5515, region: "north", county: "Somerset" },
-            { zip: "08536", town: "Plainsboro", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 700, lat: 40.3337, lng: -74.5957, region: "central", county: "Middlesex" },
-            { zip: "08502", town: "Skillman", district: "Montgomery Township Schools", grade: "A", price: 750, lat: 40.4215, lng: -74.7126, region: "central", county: "Somerset" },
-            { zip: "07645", town: "Montvale", district: "Pascack Valley Regional HS", grade: "A+", price: 825, lat: 41.0468, lng: -74.0226, region: "north", county: "Bergen" },
-            { zip: "07006", town: "Caldwell", district: "West Essex Regional Schools", grade: "A+", price: 775, lat: 40.8393, lng: -74.2765, region: "north", county: "Essex" },
-            { zip: "07930", town: "Chester", district: "West Morris Regional HS", grade: "A+", price: 700, lat: 40.7843, lng: -74.6957, region: "north", county: "Morris" },
-            { zip: "07733", town: "Holmdel", district: "Holmdel Township Schools", grade: "A", price: 850, lat: 40.3740, lng: -74.1732, region: "central", county: "Monmouth" },
-            { zip: "08873", town: "Somerset", district: "Franklin Township Schools", grade: "A-", price: 525, lat: 40.5015, lng: -74.4799, region: "central", county: "Somerset" },
-            { zip: "07481", town: "Wyckoff", district: "Wyckoff Schools", grade: "A", price: 875, lat: 40.9990, lng: -74.1718, region: "north", county: "Bergen" },
-            { zip: "07024", town: "Fort Lee", district: "Fort Lee Schools", grade: "A-", price: 625, lat: 40.8509, lng: -73.9712, region: "north", county: "Bergen" },
-            { zip: "08820", town: "Edison", district: "Edison Township Schools", grade: "A-", price: 550, lat: 40.5187, lng: -74.4121, region: "central", county: "Middlesex" },
-            { zip: "07452", town: "Glen Rock", district: "Glen Rock Public Schools", grade: "A", price: 800, lat: 40.9629, lng: -74.1318, region: "north", county: "Bergen" },
-            { zip: "08534", town: "Pennington", district: "Hopewell Valley Schools", grade: "A", price: 675, lat: 40.3268, lng: -74.7910, region: "central", county: "Mercer" },
-            { zip: "07666", town: "Teaneck", district: "Teaneck Public Schools", grade: "B+", price: 550, lat: 40.8976, lng: -74.0160, region: "north", county: "Bergen" },
-            { zip: "08816", town: "East Brunswick", district: "East Brunswick Schools", grade: "A-", price: 575, lat: 40.4279, lng: -74.4157, region: "central", county: "Middlesex" },
-            { zip: "07076", town: "Scotch Plains", district: "Scotch Plains-Fanwood Schools", grade: "A-", price: 650, lat: 40.6376, lng: -74.3893, region: "north", county: "Union" },
-            { zip: "08003", town: "Cherry Hill", district: "Cherry Hill Public Schools", grade: "B+", price: 425, lat: 39.9346, lng: -74.9946, region: "south", county: "Camden" },
-            { zip: "07960", town: "Morristown", district: "Morris School District", grade: "A-", price: 700, lat: 40.7968, lng: -74.4815, region: "north", county: "Morris" },
-            { zip: "08901", town: "New Brunswick", district: "New Brunswick Schools", grade: "B", price: 400, lat: 40.4862, lng: -74.4518, region: "central", county: "Middlesex" },
-            { zip: "07470", town: "Wayne", district: "Wayne Township Schools", grade: "B+", price: 575, lat: 40.9493, lng: -74.2765, region: "north", county: "Passaic" }
-        ];
+        // State configurations
+        const stateConfigs = {
+            NJ: {
+                center: [40.2206, -74.7597],
+                zoom: 8,
+                regions: ['all', 'north', 'central', 'south'],
+                regionLabels: { all: 'All NJ', north: 'North', central: 'Central', south: 'South' }
+            },
+            IN: {
+                center: [39.7684, -86.1581],
+                zoom: 7,
+                regions: ['all', 'central', 'north', 'south'],
+                regionLabels: { all: 'All IN', central: 'Central', north: 'North', south: 'South' }
+            }
+        };
 
-        const map = L.map('map').setView([40.2206, -74.7597], 8);
+        // School district data by state
+        const districtData = {
+            NJ: [
+                { zip: "07627", town: "Demarest", district: "Northern Valley Regional HS", grade: "A+", price: 950, lat: 40.9576, lng: -73.9635, region: "north", county: "Bergen" },
+                { zip: "08540", town: "Princeton", district: "Princeton Public Schools", grade: "A+", price: 925, lat: 40.3573, lng: -74.6672, region: "central", county: "Mercer" },
+                { zip: "07078", town: "Short Hills", district: "Millburn Township Schools", grade: "A+", price: 1200, lat: 40.7401, lng: -74.3254, region: "north", county: "Essex" },
+                { zip: "07041", town: "Millburn", district: "Millburn Township Schools", grade: "A+", price: 1100, lat: 40.7259, lng: -74.3043, region: "north", county: "Essex" },
+                { zip: "08550", town: "West Windsor", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 750, lat: 40.2915, lng: -74.6282, region: "central", county: "Mercer" },
+                { zip: "07450", town: "Ridgewood", district: "Ridgewood Public Schools", grade: "A+", price: 1050, lat: 40.9793, lng: -74.1166, region: "north", county: "Bergen" },
+                { zip: "07901", town: "Summit", district: "Summit Public Schools", grade: "A+", price: 1150, lat: 40.7145, lng: -74.3576, region: "north", county: "Union" },
+                { zip: "07670", town: "Tenafly", district: "Tenafly Public Schools", grade: "A+", price: 1250, lat: 40.9176, lng: -73.9554, region: "north", county: "Bergen" },
+                { zip: "07928", town: "Chatham", district: "School District of the Chathams", grade: "A+", price: 950, lat: 40.7407, lng: -74.3826, region: "north", county: "Morris" },
+                { zip: "08033", town: "Haddonfield", district: "Haddonfield Public Schools", grade: "A+", price: 625, lat: 39.8915, lng: -75.0376, region: "south", county: "Camden" },
+                { zip: "07046", town: "Mountain Lakes", district: "Mountain Lakes Schools", grade: "A+", price: 875, lat: 40.8926, lng: -74.4326, region: "north", county: "Morris" },
+                { zip: "08057", town: "Moorestown", district: "Moorestown Township Schools", grade: "A+", price: 575, lat: 39.9687, lng: -74.9488, region: "south", county: "Burlington" },
+                { zip: "07039", town: "Livingston", district: "Livingston Board of Education", grade: "A+", price: 850, lat: 40.7879, lng: -74.3149, region: "north", county: "Essex" },
+                { zip: "07090", town: "Westfield", district: "Westfield Public Schools", grade: "A+", price: 1050, lat: 40.6517, lng: -74.3474, region: "north", county: "Union" },
+                { zip: "07974", town: "New Providence", district: "New Providence Schools", grade: "A+", price: 825, lat: 40.6984, lng: -74.4015, region: "north", county: "Union" },
+                { zip: "07920", town: "Basking Ridge", district: "Bernards Township Schools", grade: "A+", price: 900, lat: 40.7115, lng: -74.5515, region: "north", county: "Somerset" },
+                { zip: "08536", town: "Plainsboro", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 700, lat: 40.3337, lng: -74.5957, region: "central", county: "Middlesex" },
+                { zip: "08502", town: "Skillman", district: "Montgomery Township Schools", grade: "A", price: 750, lat: 40.4215, lng: -74.7126, region: "central", county: "Somerset" },
+                { zip: "07645", town: "Montvale", district: "Pascack Valley Regional HS", grade: "A+", price: 825, lat: 41.0468, lng: -74.0226, region: "north", county: "Bergen" },
+                { zip: "07006", town: "Caldwell", district: "West Essex Regional Schools", grade: "A+", price: 775, lat: 40.8393, lng: -74.2765, region: "north", county: "Essex" },
+                { zip: "07930", town: "Chester", district: "West Morris Regional HS", grade: "A+", price: 700, lat: 40.7843, lng: -74.6957, region: "north", county: "Morris" },
+                { zip: "07733", town: "Holmdel", district: "Holmdel Township Schools", grade: "A", price: 850, lat: 40.3740, lng: -74.1732, region: "central", county: "Monmouth" },
+                { zip: "08873", town: "Somerset", district: "Franklin Township Schools", grade: "A-", price: 525, lat: 40.5015, lng: -74.4799, region: "central", county: "Somerset" },
+                { zip: "07481", town: "Wyckoff", district: "Wyckoff Schools", grade: "A", price: 875, lat: 40.9990, lng: -74.1718, region: "north", county: "Bergen" },
+                { zip: "07024", town: "Fort Lee", district: "Fort Lee Schools", grade: "A-", price: 625, lat: 40.8509, lng: -73.9712, region: "north", county: "Bergen" },
+                { zip: "08820", town: "Edison", district: "Edison Township Schools", grade: "A-", price: 550, lat: 40.5187, lng: -74.4121, region: "central", county: "Middlesex" },
+                { zip: "07452", town: "Glen Rock", district: "Glen Rock Public Schools", grade: "A", price: 800, lat: 40.9629, lng: -74.1318, region: "north", county: "Bergen" },
+                { zip: "08534", town: "Pennington", district: "Hopewell Valley Schools", grade: "A", price: 675, lat: 40.3268, lng: -74.7910, region: "central", county: "Mercer" },
+                { zip: "07666", town: "Teaneck", district: "Teaneck Public Schools", grade: "B+", price: 550, lat: 40.8976, lng: -74.0160, region: "north", county: "Bergen" },
+                { zip: "08816", town: "East Brunswick", district: "East Brunswick Schools", grade: "A-", price: 575, lat: 40.4279, lng: -74.4157, region: "central", county: "Middlesex" },
+                { zip: "07076", town: "Scotch Plains", district: "Scotch Plains-Fanwood Schools", grade: "A-", price: 650, lat: 40.6376, lng: -74.3893, region: "north", county: "Union" },
+                { zip: "08003", town: "Cherry Hill", district: "Cherry Hill Public Schools", grade: "B+", price: 425, lat: 39.9346, lng: -74.9946, region: "south", county: "Camden" },
+                { zip: "07960", town: "Morristown", district: "Morris School District", grade: "A-", price: 700, lat: 40.7968, lng: -74.4815, region: "north", county: "Morris" },
+                { zip: "08901", town: "New Brunswick", district: "New Brunswick Schools", grade: "B", price: 400, lat: 40.4862, lng: -74.4518, region: "central", county: "Middlesex" },
+                { zip: "07470", town: "Wayne", district: "Wayne Township Schools", grade: "B+", price: 575, lat: 40.9493, lng: -74.2765, region: "north", county: "Passaic" }
+            ],
+            IN: [
+                { zip: "47906", town: "West Lafayette", district: "West Lafayette Community Schools", grade: "A+", price: 280, lat: 40.4259, lng: -86.9081, region: "north", county: "Tippecanoe" },
+                { zip: "46032", town: "Carmel", district: "Carmel Clay Schools", grade: "A+", price: 525, lat: 39.9784, lng: -86.1180, region: "central", county: "Hamilton" },
+                { zip: "46077", town: "Zionsville", district: "Zionsville Community Schools", grade: "A+", price: 650, lat: 39.9509, lng: -86.2619, region: "central", county: "Boone" },
+                { zip: "46321", town: "Munster", district: "School Town of Munster", grade: "A+", price: 325, lat: 41.5645, lng: -87.5125, region: "north", county: "Lake" },
+                { zip: "46038", town: "Fishers", district: "Hamilton Southeastern Schools", grade: "A+", price: 440, lat: 39.9568, lng: -86.0139, region: "central", county: "Hamilton" },
+                { zip: "46074", town: "Westfield", district: "Westfield Washington Schools", grade: "A+", price: 475, lat: 40.0428, lng: -86.1275, region: "central", county: "Hamilton" },
+                { zip: "46060", town: "Noblesville", district: "Noblesville Schools", grade: "A", price: 380, lat: 40.0456, lng: -86.0086, region: "central", county: "Hamilton" },
+                { zip: "47401", town: "Bloomington", district: "Monroe County Community Schools", grade: "A", price: 295, lat: 39.1653, lng: -86.5264, region: "south", county: "Monroe" },
+                { zip: "46033", town: "Carmel", district: "Carmel Clay Schools", grade: "A+", price: 575, lat: 39.9670, lng: -86.0631, region: "central", county: "Hamilton" },
+                { zip: "46037", town: "Fishers", district: "Hamilton Southeastern Schools", grade: "A+", price: 425, lat: 39.9878, lng: -85.9506, region: "central", county: "Hamilton" },
+                { zip: "46062", town: "Noblesville", district: "Noblesville Schools", grade: "A", price: 365, lat: 40.0756, lng: -85.9958, region: "central", county: "Hamilton" },
+                { zip: "46123", town: "Avon", district: "Avon Community School Corp", grade: "A-", price: 340, lat: 39.7628, lng: -86.3997, region: "central", county: "Hendricks" },
+                { zip: "46112", town: "Brownsburg", district: "Brownsburg Community Schools", grade: "A", price: 350, lat: 39.8434, lng: -86.3972, region: "central", county: "Hendricks" },
+                { zip: "46142", town: "Greenwood", district: "Greenwood Community Schools", grade: "A-", price: 290, lat: 39.6137, lng: -86.1066, region: "central", county: "Johnson" },
+                { zip: "46168", town: "Plainfield", district: "Plainfield Community Schools", grade: "A-", price: 310, lat: 39.7042, lng: -86.3994, region: "central", county: "Hendricks" },
+                { zip: "46307", town: "Crown Point", district: "Crown Point Community Schools", grade: "A", price: 350, lat: 41.4170, lng: -87.3653, region: "north", county: "Lake" },
+                { zip: "46311", town: "Dyer", district: "Lake Central School Corp", grade: "A", price: 295, lat: 41.4942, lng: -87.5217, region: "north", county: "Lake" },
+                { zip: "46373", town: "St. John", district: "Lake Central School Corp", grade: "A", price: 375, lat: 41.4500, lng: -87.4700, region: "north", county: "Lake" },
+                { zip: "46375", town: "Schererville", district: "Lake Central School Corp", grade: "A", price: 315, lat: 41.4789, lng: -87.4548, region: "north", county: "Lake" },
+                { zip: "46322", town: "Highland", district: "School Town of Highland", grade: "B+", price: 225, lat: 41.5536, lng: -87.4517, region: "north", county: "Lake" },
+                { zip: "46385", town: "Valparaiso", district: "Valparaiso Community Schools", grade: "A-", price: 285, lat: 41.4731, lng: -87.0611, region: "north", county: "Porter" },
+                { zip: "46304", town: "Chesterton", district: "Duneland School Corp", grade: "A-", price: 320, lat: 41.6106, lng: -87.0642, region: "north", county: "Porter" },
+                { zip: "46140", town: "Greenfield", district: "Greenfield-Central Schools", grade: "B+", price: 275, lat: 39.7851, lng: -85.7694, region: "central", county: "Hancock" },
+                { zip: "46256", town: "Indianapolis", district: "Carmel Clay Schools", grade: "A+", price: 400, lat: 39.9081, lng: -86.0358, region: "central", county: "Hamilton" },
+                { zip: "47905", town: "Lafayette", district: "Lafayette School Corp", grade: "B", price: 215, lat: 40.4167, lng: -86.8753, region: "north", county: "Tippecanoe" },
+                { zip: "46220", town: "Indianapolis", district: "MSD Washington Township", grade: "A-", price: 285, lat: 39.8686, lng: -86.1086, region: "central", county: "Marion" },
+                { zip: "46240", town: "Indianapolis", district: "MSD Washington Township", grade: "A-", price: 375, lat: 39.9081, lng: -86.1458, region: "central", county: "Marion" },
+                { zip: "46250", town: "Indianapolis", district: "MSD Lawrence Township", grade: "B+", price: 265, lat: 39.9081, lng: -86.0358, region: "central", county: "Marion" },
+                { zip: "46075", town: "Whitestown", district: "Zionsville Community Schools", grade: "A+", price: 425, lat: 39.9970, lng: -86.3458, region: "central", county: "Boone" },
+                { zip: "47630", town: "Newburgh", district: "Warrick County Schools", grade: "A-", price: 280, lat: 37.9445, lng: -87.4053, region: "south", county: "Warrick" }
+            ]
+        };
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap © CARTO',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(map);
-
+        let currentState = 'NJ';
+        let map;
         let markers = [];
-        let activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 400, maxPrice: 1500, region: 'all', search: '' };
+        let activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 200, maxPrice: 1500, region: 'all', search: '' };
+
+        function initMap() {
+            const config = stateConfigs[currentState];
+            map = L.map('map').setView(config.center, config.zoom);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap © CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        function switchState(state) {
+            currentState = state;
+            const config = stateConfigs[state];
+            map.setView(config.center, config.zoom);
+            updateRegionChips();
+            activeFilters.region = 'all';
+            updateMarkers();
+            updateStats();
+        }
+
+        function updateRegionChips() {
+            const config = stateConfigs[currentState];
+            const container = document.getElementById('regionChips');
+            container.innerHTML = config.regions.map(function(r) {
+                return '<button class="region-chip' + (r === 'all' ? ' active' : '') + '" data-region="' + r + '">' + config.regionLabels[r] + '</button>';
+            }).join('');
+            container.querySelectorAll('.region-chip').forEach(function(chip) {
+                chip.addEventListener('click', function() {
+                    container.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
+                    chip.classList.add('active');
+                    activeFilters.region = chip.dataset.region;
+                    updateMarkers();
+                });
+            });
+        }
+
+        function updateStats() {
+            var districts = districtData[currentState];
+            document.getElementById('districtCount').textContent = districts.length;
+            var avgPrice = Math.round(districts.reduce(function(sum, d) { return sum + d.price; }, 0) / districts.length);
+            document.getElementById('avgPrice').textContent = avgPrice >= 1000 ? '$' + (avgPrice/1000).toFixed(1) + 'M' : '$' + avgPrice + 'K';
+        }
 
         function createMarker(d) {
-            const gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
-            const icon = L.divIcon({
+            var gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
+            var icon = L.divIcon({
                 className: 'custom-marker',
                 html: '<div class="marker-pin grade-' + gc + '"><span class="marker-label">' + d.grade + '</span></div>',
                 iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28]
             });
-            const marker = L.marker([d.lat, d.lng], { icon }).bindPopup(createPopup(d));
+            var marker = L.marker([d.lat, d.lng], { icon: icon }).bindPopup(createPopup(d));
             marker.districtData = d;
             return marker;
         }
 
         function createPopup(d) {
-            const gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
-            const price = d.price >= 1000 ? '$' + (d.price/1000).toFixed(1) + 'M' : '$' + d.price + 'K';
+            var gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
+            var price = d.price >= 1000 ? '$' + (d.price/1000).toFixed(1) + 'M' : '$' + d.price + 'K';
             return '<div class="popup-content"><div class="popup-header"><span class="popup-town">' + d.town + '</span><span class="popup-grade grade-' + gc + '">' + d.grade + '</span></div><div class="popup-details"><div class="popup-row"><span class="popup-label">District</span><span class="popup-value">' + d.district + '</span></div><div class="popup-row"><span class="popup-label">ZIP Code</span><span class="popup-value">' + d.zip + '</span></div><div class="popup-row"><span class="popup-label">County</span><span class="popup-value">' + d.county + '</span></div><div class="popup-row"><span class="popup-label">Median Home</span><span class="popup-value price">' + price + '</span></div></div></div>';
         }
 
         function filterDistricts() {
-            return schoolDistricts.filter(function(d) {
+            return districtData[currentState].filter(function(d) {
                 return activeFilters.grades.indexOf(d.grade) !== -1 &&
                     d.price >= activeFilters.minPrice && d.price <= activeFilters.maxPrice &&
                     (activeFilters.region === 'all' || d.region === activeFilters.region) &&
@@ -773,13 +887,22 @@
             var min = parseInt(document.getElementById('minPrice').value);
             var max = parseInt(document.getElementById('maxPrice').value);
             var track = document.getElementById('rangeTrack');
-            var minP = ((min - 400) / 1100) * 100;
-            var maxP = ((max - 400) / 1100) * 100;
+            var minP = ((min - 200) / 1300) * 100;
+            var maxP = ((max - 200) / 1300) * 100;
             track.style.left = minP + '%';
             track.style.width = (maxP - minP) + '%';
             document.getElementById('minPriceDisplay').textContent = min >= 1000 ? '$' + (min/1000).toFixed(1) + 'M' : '$' + min + 'K';
             document.getElementById('maxPriceDisplay').textContent = max >= 1500 ? '$1.5M+' : (max >= 1000 ? '$' + (max/1000).toFixed(1) + 'M' : '$' + max + 'K');
         }
+
+        // Event Listeners
+        document.querySelectorAll('.state-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.state-btn').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                switchState(btn.dataset.state);
+            });
+        });
 
         document.querySelectorAll('.grade-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -805,34 +928,30 @@
             updatePriceTrack(); updateMarkers();
         });
 
-        document.querySelectorAll('.region-chip').forEach(function(chip) {
-            chip.addEventListener('click', function() {
-                document.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
-                chip.classList.add('active');
-                activeFilters.region = chip.dataset.region;
-                updateMarkers();
-            });
-        });
-
         document.getElementById('searchInput').addEventListener('input', function(e) { activeFilters.search = e.target.value; updateMarkers(); });
         document.getElementById('sortSelect').addEventListener('change', function() { updateResultsList(filterDistricts()); });
 
         document.getElementById('resetFilters').addEventListener('click', function() {
-            activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 400, maxPrice: 1500, region: 'all', search: '' };
+            activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 200, maxPrice: 1500, region: 'all', search: '' };
             document.querySelectorAll('.grade-btn').forEach(function(btn) { btn.classList.add('active'); });
-            document.getElementById('minPrice').value = 400;
+            document.getElementById('minPrice').value = 200;
             document.getElementById('maxPrice').value = 1500;
             updatePriceTrack();
             document.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
             document.querySelector('.region-chip[data-region="all"]').classList.add('active');
             document.getElementById('searchInput').value = '';
             document.getElementById('sortSelect').value = 'grade';
-            map.setView([40.2206, -74.7597], 8);
+            var config = stateConfigs[currentState];
+            map.setView(config.center, config.zoom);
             updateMarkers();
         });
 
+        // Initialize
+        initMap();
+        updateRegionChips();
         updatePriceTrack();
         updateMarkers();
+        updateStats();
     </script>
 </body>
 </html>
