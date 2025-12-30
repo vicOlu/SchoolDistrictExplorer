@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NJ School Districts Explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --accent: #2563eb;
+            --accent-light: #dbeafe;
+            --grade-aplus: #059669;
+            --grade-a: #10b981;
+            --grade-aminus: #84cc16;
+            --grade-bplus: #eab308;
+            --grade-b: #f59e0b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .logo-text span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 1.25rem;
+        }
+
+        .filter-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .filter-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .filter-label svg {
+            width: 13px;
+            height: 13px;
+            stroke: var(--text-muted);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: all 0.15s;
+        }
+
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .grade-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .grade-btn {
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .grade-btn:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-secondary);
+        }
+
+        .grade-btn.active {
+            border-color: transparent;
+            color: white;
+        }
+
+        .grade-btn.active[data-grade="A+"] { background: var(--grade-aplus); }
+        .grade-btn.active[data-grade="A"] { background: var(--grade-a); }
+        .grade-btn.active[data-grade="A-"] { background: var(--grade-aminus); color: #1a1a1a; }
+        .grade-btn.active[data-grade="B+"] { background: var(--grade-bplus); color: #1a1a1a; }
+        .grade-btn.active[data-grade="B"] { background: var(--grade-b); color: #1a1a1a; }
+
+        .price-range-container {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 0.875rem;
+            border: 1px solid var(--border);
+        }
+
+        .price-display {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-value {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .range-slider {
+            position: relative;
+            height: 5px;
+            background: var(--border);
+            border-radius: 3px;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .range-track {
+            position: absolute;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            pointer-events: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--accent);
+        }
+
+        .region-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .region-chip {
+            padding: 0.35rem 0.7rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .region-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .region-chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-count {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .results-count strong {
+            color: var(--accent);
+        }
+
+        .sort-select {
+            padding: 0.35rem 0.6rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: calc(100vh - 500px);
+            overflow-y: auto;
+        }
+
+        .result-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .result-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .result-card.selected {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.35rem;
+        }
+
+        .result-town {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .result-grade {
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .grade-aplus { background: var(--grade-aplus); color: white; }
+        .grade-a { background: var(--grade-a); color: white; }
+        .grade-aminus { background: var(--grade-aminus); color: #1a1a1a; }
+        .grade-bplus { background: var(--grade-bplus); color: #1a1a1a; }
+        .grade-b { background: var(--grade-b); color: #1a1a1a; }
+
+        .result-details {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .result-zip {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .result-price {
+            color: var(--grade-aplus);
+            font-weight: 600;
+        }
+
+        .map-container { position: relative; }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-secondary);
+        }
+
+        .leaflet-container { font-family: 'Source Sans 3', sans-serif; }
+
+        .custom-marker { background: none; border: none; }
+
+        .marker-pin {
+            width: 28px;
+            height: 28px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            border: 2px solid rgba(255,255,255,0.8);
+            transition: all 0.15s;
+        }
+
+        .marker-pin:hover { transform: rotate(-45deg) scale(1.1); }
+
+        .marker-pin.grade-aplus { background: var(--grade-aplus); }
+        .marker-pin.grade-a { background: var(--grade-a); }
+        .marker-pin.grade-aminus { background: var(--grade-aminus); }
+        .marker-pin.grade-bplus { background: var(--grade-bplus); }
+        .marker-pin.grade-b { background: var(--grade-b); }
+
+        .marker-label {
+            transform: rotate(45deg);
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .marker-pin.grade-aminus .marker-label,
+        .marker-pin.grade-bplus .marker-label,
+        .marker-pin.grade-b .marker-label { color: #1a1a1a; }
+
+        .leaflet-popup-content-wrapper {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .leaflet-popup-content { margin: 0; color: var(--text-primary); }
+        .leaflet-popup-tip { background: var(--bg-primary); }
+
+        .popup-content { padding: 0.875rem; min-width: 200px; }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .popup-town { font-size: 1rem; font-weight: 700; }
+
+        .popup-grade {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .popup-details { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .popup-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .popup-label { color: var(--text-muted); }
+        .popup-value { font-weight: 500; }
+        .popup-value.price { color: var(--grade-aplus); font-weight: 600; }
+
+        .map-legend {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.875rem;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .legend-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+        }
+
+        .legend-items { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .reset-btn {
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--bg-primary);
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 0.75rem;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            border-style: solid;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        @media (max-width: 1024px) {
+            .main-container { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+            .sidebar { order: 2; }
+            .map-container { order: 1; }
+            .stats-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🎓</div>
+                <div class="logo-text">
+                    <h1>NJ School Districts</h1>
+                    <span>Interactive Explorer</span>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value">35</div>
+                    <div class="stat-label">Districts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$780K</div>
+                    <div class="stat-label">Avg Home Price</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">A+</div>
+                    <div class="stat-label">Top Grade</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="search-container">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search town or zip code...">
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Niche Grade
+                </div>
+                <div class="grade-filters">
+                    <button class="grade-btn active" data-grade="A+">A+</button>
+                    <button class="grade-btn active" data-grade="A">A</button>
+                    <button class="grade-btn active" data-grade="A-">A-</button>
+                    <button class="grade-btn active" data-grade="B+">B+</button>
+                    <button class="grade-btn active" data-grade="B">B</button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    Home Price Range
+                </div>
+                <div class="price-range-container">
+                    <div class="price-display">
+                        <span class="price-value" id="minPriceDisplay">$400K</span>
+                        <span class="price-value" id="maxPriceDisplay">$1.5M+</span>
+                    </div>
+                    <div class="range-slider">
+                        <div class="range-track" id="rangeTrack"></div>
+                        <input type="range" id="minPrice" min="400" max="1500" value="400" step="50">
+                        <input type="range" id="maxPrice" min="400" max="1500" value="1500" step="50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Region
+                </div>
+                <div class="region-chips">
+                    <button class="region-chip active" data-region="all">All NJ</button>
+                    <button class="region-chip" data-region="north">North</button>
+                    <button class="region-chip" data-region="central">Central</button>
+                    <button class="region-chip" data-region="south">South</button>
+                </div>
+            </div>
+
+            <button class="reset-btn" id="resetFilters">↺ Reset All Filters</button>
+
+            <div class="results-header">
+                <span class="results-count"><strong id="resultsCount">35</strong> districts found</span>
+                <select class="sort-select" id="sortSelect">
+                    <option value="grade">Sort by Grade</option>
+                    <option value="price-asc">Price: Low → High</option>
+                    <option value="price-desc">Price: High → Low</option>
+                    <option value="name">Name A-Z</option>
+                </select>
+            </div>
+
+            <div class="results-list" id="resultsList"></div>
+        </aside>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="map-legend">
+                <div class="legend-title">Niche Grade</div>
+                <div class="legend-items">
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-aplus)"></div><span>A+ Exceptional</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-a)"></div><span>A Excellent</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-aminus)"></div><span>A- Very Good</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-bplus)"></div><span>B+ Good</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--grade-b)"></div><span>B Above Average</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const schoolDistricts = [
+            { zip: "07627", town: "Demarest", district: "Northern Valley Regional HS", grade: "A+", price: 950, lat: 40.9576, lng: -73.9635, region: "north", county: "Bergen" },
+            { zip: "08540", town: "Princeton", district: "Princeton Public Schools", grade: "A+", price: 925, lat: 40.3573, lng: -74.6672, region: "central", county: "Mercer" },
+            { zip: "07078", town: "Short Hills", district: "Millburn Township Schools", grade: "A+", price: 1200, lat: 40.7401, lng: -74.3254, region: "north", county: "Essex" },
+            { zip: "07041", town: "Millburn", district: "Millburn Township Schools", grade: "A+", price: 1100, lat: 40.7259, lng: -74.3043, region: "north", county: "Essex" },
+            { zip: "08550", town: "West Windsor", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 750, lat: 40.2915, lng: -74.6282, region: "central", county: "Mercer" },
+            { zip: "07450", town: "Ridgewood", district: "Ridgewood Public Schools", grade: "A+", price: 1050, lat: 40.9793, lng: -74.1166, region: "north", county: "Bergen" },
+            { zip: "07901", town: "Summit", district: "Summit Public Schools", grade: "A+", price: 1150, lat: 40.7145, lng: -74.3576, region: "north", county: "Union" },
+            { zip: "07670", town: "Tenafly", district: "Tenafly Public Schools", grade: "A+", price: 1250, lat: 40.9176, lng: -73.9554, region: "north", county: "Bergen" },
+            { zip: "07928", town: "Chatham", district: "School District of the Chathams", grade: "A+", price: 950, lat: 40.7407, lng: -74.3826, region: "north", county: "Morris" },
+            { zip: "08033", town: "Haddonfield", district: "Haddonfield Public Schools", grade: "A+", price: 625, lat: 39.8915, lng: -75.0376, region: "south", county: "Camden" },
+            { zip: "07046", town: "Mountain Lakes", district: "Mountain Lakes Schools", grade: "A+", price: 875, lat: 40.8926, lng: -74.4326, region: "north", county: "Morris" },
+            { zip: "08057", town: "Moorestown", district: "Moorestown Township Schools", grade: "A+", price: 575, lat: 39.9687, lng: -74.9488, region: "south", county: "Burlington" },
+            { zip: "07039", town: "Livingston", district: "Livingston Board of Education", grade: "A+", price: 850, lat: 40.7879, lng: -74.3149, region: "north", county: "Essex" },
+            { zip: "07090", town: "Westfield", district: "Westfield Public Schools", grade: "A+", price: 1050, lat: 40.6517, lng: -74.3474, region: "north", county: "Union" },
+            { zip: "07974", town: "New Providence", district: "New Providence Schools", grade: "A+", price: 825, lat: 40.6984, lng: -74.4015, region: "north", county: "Union" },
+            { zip: "07920", town: "Basking Ridge", district: "Bernards Township Schools", grade: "A+", price: 900, lat: 40.7115, lng: -74.5515, region: "north", county: "Somerset" },
+            { zip: "08536", town: "Plainsboro", district: "West Windsor-Plainsboro Regional", grade: "A+", price: 700, lat: 40.3337, lng: -74.5957, region: "central", county: "Middlesex" },
+            { zip: "08502", town: "Skillman", district: "Montgomery Township Schools", grade: "A", price: 750, lat: 40.4215, lng: -74.7126, region: "central", county: "Somerset" },
+            { zip: "07645", town: "Montvale", district: "Pascack Valley Regional HS", grade: "A+", price: 825, lat: 41.0468, lng: -74.0226, region: "north", county: "Bergen" },
+            { zip: "07006", town: "Caldwell", district: "West Essex Regional Schools", grade: "A+", price: 775, lat: 40.8393, lng: -74.2765, region: "north", county: "Essex" },
+            { zip: "07930", town: "Chester", district: "West Morris Regional HS", grade: "A+", price: 700, lat: 40.7843, lng: -74.6957, region: "north", county: "Morris" },
+            { zip: "07733", town: "Holmdel", district: "Holmdel Township Schools", grade: "A", price: 850, lat: 40.3740, lng: -74.1732, region: "central", county: "Monmouth" },
+            { zip: "08873", town: "Somerset", district: "Franklin Township Schools", grade: "A-", price: 525, lat: 40.5015, lng: -74.4799, region: "central", county: "Somerset" },
+            { zip: "07481", town: "Wyckoff", district: "Wyckoff Schools", grade: "A", price: 875, lat: 40.9990, lng: -74.1718, region: "north", county: "Bergen" },
+            { zip: "07024", town: "Fort Lee", district: "Fort Lee Schools", grade: "A-", price: 625, lat: 40.8509, lng: -73.9712, region: "north", county: "Bergen" },
+            { zip: "08820", town: "Edison", district: "Edison Township Schools", grade: "A-", price: 550, lat: 40.5187, lng: -74.4121, region: "central", county: "Middlesex" },
+            { zip: "07452", town: "Glen Rock", district: "Glen Rock Public Schools", grade: "A", price: 800, lat: 40.9629, lng: -74.1318, region: "north", county: "Bergen" },
+            { zip: "08534", town: "Pennington", district: "Hopewell Valley Schools", grade: "A", price: 675, lat: 40.3268, lng: -74.7910, region: "central", county: "Mercer" },
+            { zip: "07666", town: "Teaneck", district: "Teaneck Public Schools", grade: "B+", price: 550, lat: 40.8976, lng: -74.0160, region: "north", county: "Bergen" },
+            { zip: "08816", town: "East Brunswick", district: "East Brunswick Schools", grade: "A-", price: 575, lat: 40.4279, lng: -74.4157, region: "central", county: "Middlesex" },
+            { zip: "07076", town: "Scotch Plains", district: "Scotch Plains-Fanwood Schools", grade: "A-", price: 650, lat: 40.6376, lng: -74.3893, region: "north", county: "Union" },
+            { zip: "08003", town: "Cherry Hill", district: "Cherry Hill Public Schools", grade: "B+", price: 425, lat: 39.9346, lng: -74.9946, region: "south", county: "Camden" },
+            { zip: "07960", town: "Morristown", district: "Morris School District", grade: "A-", price: 700, lat: 40.7968, lng: -74.4815, region: "north", county: "Morris" },
+            { zip: "08901", town: "New Brunswick", district: "New Brunswick Schools", grade: "B", price: 400, lat: 40.4862, lng: -74.4518, region: "central", county: "Middlesex" },
+            { zip: "07470", town: "Wayne", district: "Wayne Township Schools", grade: "B+", price: 575, lat: 40.9493, lng: -74.2765, region: "north", county: "Passaic" }
+        ];
+
+        const map = L.map('map').setView([40.2206, -74.7597], 8);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap © CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        let markers = [];
+        let activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 400, maxPrice: 1500, region: 'all', search: '' };
+
+        function createMarker(d) {
+            const gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
+            const icon = L.divIcon({
+                className: 'custom-marker',
+                html: '<div class="marker-pin grade-' + gc + '"><span class="marker-label">' + d.grade + '</span></div>',
+                iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28]
+            });
+            const marker = L.marker([d.lat, d.lng], { icon }).bindPopup(createPopup(d));
+            marker.districtData = d;
+            return marker;
+        }
+
+        function createPopup(d) {
+            const gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
+            const price = d.price >= 1000 ? '$' + (d.price/1000).toFixed(1) + 'M' : '$' + d.price + 'K';
+            return '<div class="popup-content"><div class="popup-header"><span class="popup-town">' + d.town + '</span><span class="popup-grade grade-' + gc + '">' + d.grade + '</span></div><div class="popup-details"><div class="popup-row"><span class="popup-label">District</span><span class="popup-value">' + d.district + '</span></div><div class="popup-row"><span class="popup-label">ZIP Code</span><span class="popup-value">' + d.zip + '</span></div><div class="popup-row"><span class="popup-label">County</span><span class="popup-value">' + d.county + '</span></div><div class="popup-row"><span class="popup-label">Median Home</span><span class="popup-value price">' + price + '</span></div></div></div>';
+        }
+
+        function filterDistricts() {
+            return schoolDistricts.filter(function(d) {
+                return activeFilters.grades.indexOf(d.grade) !== -1 &&
+                    d.price >= activeFilters.minPrice && d.price <= activeFilters.maxPrice &&
+                    (activeFilters.region === 'all' || d.region === activeFilters.region) &&
+                    (activeFilters.search === '' || d.town.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1 ||
+                     d.zip.indexOf(activeFilters.search) !== -1 || d.district.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1);
+            });
+        }
+
+        function sortDistricts(arr, by) {
+            var go = { 'A+': 1, 'A': 2, 'A-': 3, 'B+': 4, 'B': 5 };
+            var sorted = arr.slice();
+            if (by === 'grade') sorted.sort(function(a, b) { return go[a.grade] - go[b.grade]; });
+            else if (by === 'price-asc') sorted.sort(function(a, b) { return a.price - b.price; });
+            else if (by === 'price-desc') sorted.sort(function(a, b) { return b.price - a.price; });
+            else if (by === 'name') sorted.sort(function(a, b) { return a.town.localeCompare(b.town); });
+            return sorted;
+        }
+
+        function updateMarkers() {
+            markers.forEach(function(m) { map.removeLayer(m); });
+            markers = [];
+            var filtered = filterDistricts();
+            filtered.forEach(function(d) { var m = createMarker(d); m.addTo(map); markers.push(m); });
+            document.getElementById('resultsCount').textContent = filtered.length;
+            updateResultsList(filtered);
+        }
+
+        function updateResultsList(districts) {
+            var sorted = sortDistricts(districts, document.getElementById('sortSelect').value);
+            var container = document.getElementById('resultsList');
+            container.innerHTML = sorted.map(function(d) {
+                var gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
+                var price = d.price >= 1000 ? '$' + (d.price/1000).toFixed(1) + 'M' : '$' + d.price + 'K';
+                return '<div class="result-card" data-zip="' + d.zip + '" data-lat="' + d.lat + '" data-lng="' + d.lng + '"><div class="result-header"><span class="result-town">' + d.town + '</span><span class="result-grade grade-' + gc + '">' + d.grade + '</span></div><div class="result-details"><span class="result-zip">' + d.zip + '</span><span class="result-price">' + price + '</span><span>' + d.county + ' Co.</span></div></div>';
+            }).join('');
+            container.querySelectorAll('.result-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var marker = markers.find(function(m) { return m.districtData.zip === card.dataset.zip; });
+                    if (marker) { map.setView([card.dataset.lat, card.dataset.lng], 12); marker.openPopup(); }
+                    container.querySelectorAll('.result-card').forEach(function(c) { c.classList.remove('selected'); });
+                    card.classList.add('selected');
+                });
+            });
+        }
+
+        function updatePriceTrack() {
+            var min = parseInt(document.getElementById('minPrice').value);
+            var max = parseInt(document.getElementById('maxPrice').value);
+            var track = document.getElementById('rangeTrack');
+            var minP = ((min - 400) / 1100) * 100;
+            var maxP = ((max - 400) / 1100) * 100;
+            track.style.left = minP + '%';
+            track.style.width = (maxP - minP) + '%';
+            document.getElementById('minPriceDisplay').textContent = min >= 1000 ? '$' + (min/1000).toFixed(1) + 'M' : '$' + min + 'K';
+            document.getElementById('maxPriceDisplay').textContent = max >= 1500 ? '$1.5M+' : (max >= 1000 ? '$' + (max/1000).toFixed(1) + 'M' : '$' + max + 'K');
+        }
+
+        document.querySelectorAll('.grade-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                btn.classList.toggle('active');
+                var g = btn.dataset.grade;
+                if (btn.classList.contains('active')) { if (activeFilters.grades.indexOf(g) === -1) activeFilters.grades.push(g); }
+                else { activeFilters.grades = activeFilters.grades.filter(function(x) { return x !== g; }); }
+                updateMarkers();
+            });
+        });
+
+        document.getElementById('minPrice').addEventListener('input', function(e) {
+            var min = parseInt(e.target.value), max = parseInt(document.getElementById('maxPrice').value);
+            if (min > max) { document.getElementById('maxPrice').value = min; max = min; }
+            activeFilters.minPrice = min; activeFilters.maxPrice = max;
+            updatePriceTrack(); updateMarkers();
+        });
+
+        document.getElementById('maxPrice').addEventListener('input', function(e) {
+            var max = parseInt(e.target.value), min = parseInt(document.getElementById('minPrice').value);
+            if (max < min) { document.getElementById('minPrice').value = max; min = max; }
+            activeFilters.minPrice = min; activeFilters.maxPrice = max;
+            updatePriceTrack(); updateMarkers();
+        });
+
+        document.querySelectorAll('.region-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
+                chip.classList.add('active');
+                activeFilters.region = chip.dataset.region;
+                updateMarkers();
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', function(e) { activeFilters.search = e.target.value; updateMarkers(); });
+        document.getElementById('sortSelect').addEventListener('change', function() { updateResultsList(filterDistricts()); });
+
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 400, maxPrice: 1500, region: 'all', search: '' };
+            document.querySelectorAll('.grade-btn').forEach(function(btn) { btn.classList.add('active'); });
+            document.getElementById('minPrice').value = 400;
+            document.getElementById('maxPrice').value = 1500;
+            updatePriceTrack();
+            document.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
+            document.querySelector('.region-chip[data-region="all"]').classList.add('active');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sortSelect').value = 'grade';
+            map.setView([40.2206, -74.7597], 8);
+            updateMarkers();
+        });
+
+        updatePriceTrack();
+        updateMarkers();
+    </script>
+</body>
+</html>
