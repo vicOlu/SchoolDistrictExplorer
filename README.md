@@ -4,15 +4,27 @@ An interactive map for exploring top-rated school districts across multiple US s
 
 ## Currently Supported States
 
-- 🗽 **New Jersey** - 35 districts (North/Central/South regions)
-- 🌽 **Indiana** - 30 districts (Central/North/South regions)
+| State | Districts | Grade Range | Price Range |
+|-------|-----------|-------------|-------------|
+| 🗽 **New Jersey** | 35 | A+ to B | $400K - $1.25M |
+| 🌽 **Indiana** | 81 | A+ to B | $95K - $650K |
+
+## Indiana Coverage
+
+The Indiana data includes comprehensive coverage of A+ through B rated districts:
+
+- **A+ Districts (14)**: West Lafayette, Carmel, Zionsville, Munster, Hamilton Southeastern (Fishers), Westfield, Brownsburg, Plainfield, Speedway, Northwest Allen County
+- **A Districts (22)**: Noblesville, Bloomington, Crown Point, Lake Central, Penn-Harris-Madison, Southwest Allen County, New Albany-Floyd, Center Grove, Warsaw, Goshen, Elkhart, and more
+- **A- Districts (18)**: Avon, Valparaiso, Duneland, MSD Washington Township, Kokomo, Evansville, Columbus, La Porte, and more
+- **B+ Districts (17)**: Highland, Greenfield, Lafayette, South Bend, Merrillville, Hammond, Muncie, Terre Haute, and more
+- **B Districts (10)**: Fort Wayne Community, Perry Township, Franklin Township, and other Indianapolis-area districts
 
 ## Features
 
 - **State Switching** - Toggle between supported states with one click
 - **Interactive Map** - Leaflet-based map with custom markers color-coded by school grade
 - **Grade Filtering** - Filter districts by Niche grade (A+ through B)
-- **Price Range Slider** - Filter by median home price ($200K - $1.5M+)
+- **Price Range Slider** - Filter by median home price ($150K - $1.5M+)
 - **Region Filter** - View districts by geographic region within each state
 - **Search** - Find districts by town name, ZIP code, or district name
 - **Sorting** - Sort results by grade, price, or alphabetically
@@ -30,7 +42,7 @@ Each district includes:
 - Region
 
 **Data Sources:**
-- School ratings from [Niche.com](https://www.niche.com) (2024-2025 rankings)
+- School ratings from [Niche.com](https://www.niche.com) (2024-2026 rankings)
 - Home prices from Zillow, Redfin, and local market reports
 
 ## Usage
@@ -54,9 +66,8 @@ To add a new state, edit `index.html` and add entries to:
 ### 1. State Configuration
 ```javascript
 const stateConfigs = {
-    // Add your state
     TX: {
-        center: [31.9686, -99.9018],  // Lat/Lng center
+        center: [31.9686, -99.9018],
         zoom: 6,
         regions: ['all', 'north', 'central', 'south', 'west'],
         regionLabels: { all: 'All TX', north: 'North', central: 'Central', south: 'South', west: 'West' }
@@ -102,7 +113,7 @@ const districtData = {
 
 Contributions welcome! Ideas:
 
-- [ ] Add more states (Texas, California, etc.)
+- [ ] Add more states (Texas, California, Ohio, etc.)
 - [ ] Include additional metrics (test scores, student-teacher ratio)
 - [ ] Add commute time estimates to major cities
 - [ ] Property tax information

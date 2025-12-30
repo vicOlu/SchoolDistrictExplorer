@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
             --bg-primary: #ffffff;
             --bg-secondary: #f8fafc;
@@ -27,539 +26,105 @@
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
-
-        body {
-            font-family: 'Source Sans 3', -apple-system, sans-serif;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            min-height: 100vh;
-        }
-
-        .header {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 1.5rem;
-            box-shadow: var(--shadow);
-        }
-
-        .header-content {
-            max-width: 1800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--accent);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-
-        .logo-text h1 {
-            font-size: 1.125rem;
-            font-weight: 700;
-        }
-
-        .logo-text span {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .state-selector {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .state-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .state-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .state-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .stats-bar {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .stat-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            background: var(--bg-primary);
-            border-right: 1px solid var(--border);
-            overflow-y: auto;
-            padding: 1.25rem;
-        }
-
-        .filter-section {
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.6rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .filter-label svg {
-            width: 13px;
-            height: 13px;
-            stroke: var(--text-muted);
-        }
-
-        .search-container {
-            position: relative;
-            margin-bottom: 1.25rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            transition: all 0.15s;
-        }
-
+        body { font-family: 'Source Sans 3', -apple-system, sans-serif; background: var(--bg-secondary); color: var(--text-primary); min-height: 100vh; }
+        .header { background: var(--bg-primary); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; box-shadow: var(--shadow); }
+        .header-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .logo-text h1 { font-size: 1.125rem; font-weight: 700; }
+        .logo-text span { font-size: 0.75rem; color: var(--text-muted); }
+        .state-selector { display: flex; gap: 0.5rem; align-items: center; }
+        .state-btn { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-secondary); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .state-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .state-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .stats-bar { display: flex; gap: 2rem; }
+        .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .main-container { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 70px); }
+        .sidebar { background: var(--bg-primary); border-right: 1px solid var(--border); overflow-y: auto; padding: 1.25rem; }
+        .filter-section { margin-bottom: 1.25rem; }
+        .filter-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.6rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+        .filter-label svg { width: 13px; height: 13px; stroke: var(--text-muted); }
+        .search-container { position: relative; margin-bottom: 1.25rem; }
+        .search-input { width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 0.875rem; transition: all 0.15s; }
         .search-input::placeholder { color: var(--text-muted); }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: var(--bg-primary);
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 0.875rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            width: 16px;
-            height: 16px;
-        }
-
-        .grade-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .grade-btn {
-            padding: 0.4rem 0.7rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .grade-btn:hover {
-            border-color: var(--border-hover);
-            background: var(--bg-secondary);
-        }
-
-        .grade-btn.active {
-            border-color: transparent;
-            color: white;
-        }
-
+        .search-input:focus { outline: none; border-color: var(--accent); background: var(--bg-primary); box-shadow: 0 0 0 3px var(--accent-light); }
+        .search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 16px; height: 16px; }
+        .grade-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .grade-btn { padding: 0.4rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-secondary); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .grade-btn:hover { border-color: var(--border-hover); background: var(--bg-secondary); }
+        .grade-btn.active { border-color: transparent; color: white; }
         .grade-btn.active[data-grade="A+"] { background: var(--grade-aplus); }
         .grade-btn.active[data-grade="A"] { background: var(--grade-a); }
         .grade-btn.active[data-grade="A-"] { background: var(--grade-aminus); color: #1a1a1a; }
         .grade-btn.active[data-grade="B+"] { background: var(--grade-bplus); color: #1a1a1a; }
         .grade-btn.active[data-grade="B"] { background: var(--grade-b); color: #1a1a1a; }
-
-        .price-range-container {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 0.875rem;
-            border: 1px solid var(--border);
-        }
-
-        .price-display {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .price-value {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .range-slider {
-            position: relative;
-            height: 5px;
-            background: var(--border);
-            border-radius: 3px;
-            margin: 1rem 0 0.5rem;
-        }
-
-        .range-track {
-            position: absolute;
-            height: 100%;
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 5px;
-            background: transparent;
-            position: absolute;
-            top: 0;
-            pointer-events: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            background: var(--bg-primary);
-            border-radius: 50%;
-            cursor: pointer;
-            pointer-events: auto;
-            box-shadow: var(--shadow-md);
-            border: 2px solid var(--accent);
-        }
-
-        .region-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .region-chip {
-            padding: 0.35rem 0.7rem;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .region-chip:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .region-chip.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.6rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .results-count {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .results-count strong {
-            color: var(--accent);
-        }
-
-        .sort-select {
-            padding: 0.35rem 0.6rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .results-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            max-height: calc(100vh - 520px);
-            overflow-y: auto;
-        }
-
-        .result-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .result-card:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow);
-        }
-
-        .result-card.selected {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.35rem;
-        }
-
-        .result-town {
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .result-grade {
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-
+        .price-range-container { background: var(--bg-secondary); border-radius: 8px; padding: 0.875rem; border: 1px solid var(--border); }
+        .price-display { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .price-value { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+        .range-slider { position: relative; height: 5px; background: var(--border); border-radius: 3px; margin: 1rem 0 0.5rem; }
+        .range-track { position: absolute; height: 100%; background: var(--accent); border-radius: 3px; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 5px; background: transparent; position: absolute; top: 0; pointer-events: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--bg-primary); border-radius: 50%; cursor: pointer; pointer-events: auto; box-shadow: var(--shadow-md); border: 2px solid var(--accent); }
+        .region-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .region-chip { padding: 0.35rem 0.7rem; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; transition: all 0.15s; }
+        .region-chip:hover { border-color: var(--accent); color: var(--accent); }
+        .region-chip.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        .results-count { font-size: 0.75rem; color: var(--text-muted); }
+        .results-count strong { color: var(--accent); }
+        .sort-select { padding: 0.35rem 0.6rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 5px; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; }
+        .results-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: calc(100vh - 520px); overflow-y: auto; }
+        .result-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; cursor: pointer; transition: all 0.15s; }
+        .result-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+        .result-card.selected { border-color: var(--accent); background: var(--accent-light); }
+        .result-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem; }
+        .result-town { font-weight: 600; font-size: 0.875rem; }
+        .result-grade { padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 700; }
         .grade-aplus { background: var(--grade-aplus); color: white; }
         .grade-a { background: var(--grade-a); color: white; }
         .grade-aminus { background: var(--grade-aminus); color: #1a1a1a; }
         .grade-bplus { background: var(--grade-bplus); color: #1a1a1a; }
         .grade-b { background: var(--grade-b); color: #1a1a1a; }
-
-        .result-details {
-            display: flex;
-            gap: 0.75rem;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        .result-zip {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .result-price {
-            color: var(--grade-aplus);
-            font-weight: 600;
-        }
-
+        .result-details { display: flex; gap: 0.75rem; font-size: 0.7rem; color: var(--text-muted); }
+        .result-zip { color: var(--text-secondary); font-weight: 500; }
+        .result-price { color: var(--grade-aplus); font-weight: 600; }
         .map-container { position: relative; }
-
-        #map {
-            width: 100%;
-            height: 100%;
-            background: var(--bg-secondary);
-        }
-
+        #map { width: 100%; height: 100%; background: var(--bg-secondary); }
         .leaflet-container { font-family: 'Source Sans 3', sans-serif; }
-
         .custom-marker { background: none; border: none; }
-
-        .marker-pin {
-            width: 28px;
-            height: 28px;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
-            border: 2px solid rgba(255,255,255,0.8);
-            transition: all 0.15s;
-        }
-
+        .marker-pin { width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); border: 2px solid rgba(255,255,255,0.8); transition: all 0.15s; }
         .marker-pin:hover { transform: rotate(-45deg) scale(1.1); }
-
         .marker-pin.grade-aplus { background: var(--grade-aplus); }
         .marker-pin.grade-a { background: var(--grade-a); }
         .marker-pin.grade-aminus { background: var(--grade-aminus); }
         .marker-pin.grade-bplus { background: var(--grade-bplus); }
         .marker-pin.grade-b { background: var(--grade-b); }
-
-        .marker-label {
-            transform: rotate(45deg);
-            font-size: 9px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .marker-pin.grade-aminus .marker-label,
-        .marker-pin.grade-bplus .marker-label,
-        .marker-pin.grade-b .marker-label { color: #1a1a1a; }
-
-        .leaflet-popup-content-wrapper {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            box-shadow: var(--shadow-md);
-        }
-
+        .marker-label { transform: rotate(45deg); font-size: 9px; font-weight: 700; color: white; }
+        .marker-pin.grade-aminus .marker-label, .marker-pin.grade-bplus .marker-label, .marker-pin.grade-b .marker-label { color: #1a1a1a; }
+        .leaflet-popup-content-wrapper { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-md); }
         .leaflet-popup-content { margin: 0; color: var(--text-primary); }
         .leaflet-popup-tip { background: var(--bg-primary); }
-
         .popup-content { padding: 0.875rem; min-width: 200px; }
-
-        .popup-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.6rem;
-            padding-bottom: 0.6rem;
-            border-bottom: 1px solid var(--border);
-        }
-
+        .popup-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
         .popup-town { font-size: 1rem; font-weight: 700; }
-
-        .popup-grade {
-            padding: 0.25rem 0.5rem;
-            border-radius: 5px;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-
+        .popup-grade { padding: 0.25rem 0.5rem; border-radius: 5px; font-size: 0.7rem; font-weight: 700; }
         .popup-details { display: flex; flex-direction: column; gap: 0.4rem; }
-
-        .popup-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-
+        .popup-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
         .popup-label { color: var(--text-muted); }
         .popup-value { font-weight: 500; }
         .popup-value.price { color: var(--grade-aplus); font-weight: 600; }
-
-        .map-legend {
-            position: absolute;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.875rem;
-            z-index: 1000;
-            box-shadow: var(--shadow);
-        }
-
-        .legend-title {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.6rem;
-            font-weight: 600;
-        }
-
+        .map-legend { position: absolute; bottom: 1.5rem; right: 1.5rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; padding: 0.875rem; z-index: 1000; box-shadow: var(--shadow); }
+        .legend-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.6rem; font-weight: 600; }
         .legend-items { display: flex; flex-direction: column; gap: 0.4rem; }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-        .reset-btn {
-            width: 100%;
-            padding: 0.6rem;
-            background: var(--bg-primary);
-            border: 1px dashed var(--border);
-            border-radius: 6px;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.15s;
-            margin-top: 0.75rem;
-        }
-
-        .reset-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            border-style: solid;
-        }
-
+        .reset-btn { width: 100%; padding: 0.6rem; background: var(--bg-primary); border: 1px dashed var(--border); border-radius: 6px; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; transition: all 0.15s; margin-top: 0.75rem; }
+        .reset-btn:hover { border-color: var(--accent); color: var(--accent); border-style: solid; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-        @media (max-width: 1024px) {
-            .main-container { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-            .sidebar { order: 2; }
-            .map-container { order: 1; }
-            .stats-bar { display: none; }
-        }
+        @media (max-width: 1024px) { .main-container { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; } .sidebar { order: 2; } .map-container { order: 1; } .stats-bar { display: none; } }
     </style>
 </head>
 <body>
@@ -577,35 +142,19 @@
                 <button class="state-btn" data-state="IN">Indiana</button>
             </div>
             <div class="stats-bar">
-                <div class="stat">
-                    <div class="stat-value" id="districtCount">35</div>
-                    <div class="stat-label">Districts</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="avgPrice">$780K</div>
-                    <div class="stat-label">Avg Price</div>
-                </div>
+                <div class="stat"><div class="stat-value" id="districtCount">35</div><div class="stat-label">Districts</div></div>
+                <div class="stat"><div class="stat-value" id="avgPrice">$780K</div><div class="stat-label">Avg Price</div></div>
             </div>
         </div>
     </header>
-
     <div class="main-container">
         <aside class="sidebar">
             <div class="search-container">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input type="text" class="search-input" id="searchInput" placeholder="Search town or zip code...">
             </div>
-
             <div class="filter-section">
-                <div class="filter-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                    </svg>
-                    Niche Grade
-                </div>
+                <div class="filter-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>Niche Grade</div>
                 <div class="grade-filters">
                     <button class="grade-btn active" data-grade="A+">A+</button>
                     <button class="grade-btn active" data-grade="A">A</button>
@@ -614,56 +163,24 @@
                     <button class="grade-btn active" data-grade="B">B</button>
                 </div>
             </div>
-
             <div class="filter-section">
-                <div class="filter-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                    Home Price Range
-                </div>
+                <div class="filter-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>Home Price Range</div>
                 <div class="price-range-container">
-                    <div class="price-display">
-                        <span class="price-value" id="minPriceDisplay">$200K</span>
-                        <span class="price-value" id="maxPriceDisplay">$1.5M+</span>
-                    </div>
-                    <div class="range-slider">
-                        <div class="range-track" id="rangeTrack"></div>
-                        <input type="range" id="minPrice" min="200" max="1500" value="200" step="50">
-                        <input type="range" id="maxPrice" min="200" max="1500" value="1500" step="50">
-                    </div>
+                    <div class="price-display"><span class="price-value" id="minPriceDisplay">$150K</span><span class="price-value" id="maxPriceDisplay">$1.5M+</span></div>
+                    <div class="range-slider"><div class="range-track" id="rangeTrack"></div><input type="range" id="minPrice" min="150" max="1500" value="150" step="25"><input type="range" id="maxPrice" min="150" max="1500" value="1500" step="25"></div>
                 </div>
             </div>
-
             <div class="filter-section">
-                <div class="filter-label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    Region
-                </div>
-                <div class="region-chips" id="regionChips">
-                    <!-- Populated by JS based on state -->
-                </div>
+                <div class="filter-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>Region</div>
+                <div class="region-chips" id="regionChips"></div>
             </div>
-
             <button class="reset-btn" id="resetFilters">↺ Reset All Filters</button>
-
             <div class="results-header">
                 <span class="results-count"><strong id="resultsCount">35</strong> districts found</span>
-                <select class="sort-select" id="sortSelect">
-                    <option value="grade">Sort by Grade</option>
-                    <option value="price-asc">Price: Low → High</option>
-                    <option value="price-desc">Price: High → Low</option>
-                    <option value="name">Name A-Z</option>
-                </select>
+                <select class="sort-select" id="sortSelect"><option value="grade">Sort by Grade</option><option value="price-asc">Price: Low → High</option><option value="price-desc">Price: High → Low</option><option value="name">Name A-Z</option></select>
             </div>
-
             <div class="results-list" id="resultsList"></div>
         </aside>
-
         <div class="map-container">
             <div id="map"></div>
             <div class="map-legend">
@@ -678,26 +195,12 @@
             </div>
         </div>
     </div>
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // State configurations
         const stateConfigs = {
-            NJ: {
-                center: [40.2206, -74.7597],
-                zoom: 8,
-                regions: ['all', 'north', 'central', 'south'],
-                regionLabels: { all: 'All NJ', north: 'North', central: 'Central', south: 'South' }
-            },
-            IN: {
-                center: [39.7684, -86.1581],
-                zoom: 7,
-                regions: ['all', 'central', 'north', 'south'],
-                regionLabels: { all: 'All IN', central: 'Central', north: 'North', south: 'South' }
-            }
+            NJ: { center: [40.2206, -74.7597], zoom: 8, regions: ['all', 'north', 'central', 'south'], regionLabels: { all: 'All NJ', north: 'North', central: 'Central', south: 'South' } },
+            IN: { center: [39.7684, -86.1581], zoom: 7, regions: ['all', 'central', 'north', 'south'], regionLabels: { all: 'All IN', central: 'Central', north: 'North', south: 'South' } }
         };
-
-        // School district data by state
         const districtData = {
             NJ: [
                 { zip: "07627", town: "Demarest", district: "Northern Valley Regional HS", grade: "A+", price: 950, lat: 40.9576, lng: -73.9635, region: "north", county: "Bergen" },
@@ -737,54 +240,103 @@
                 { zip: "07470", town: "Wayne", district: "Wayne Township Schools", grade: "B+", price: 575, lat: 40.9493, lng: -74.2765, region: "north", county: "Passaic" }
             ],
             IN: [
+                // A+ Districts
                 { zip: "47906", town: "West Lafayette", district: "West Lafayette Community Schools", grade: "A+", price: 280, lat: 40.4259, lng: -86.9081, region: "north", county: "Tippecanoe" },
                 { zip: "46032", town: "Carmel", district: "Carmel Clay Schools", grade: "A+", price: 525, lat: 39.9784, lng: -86.1180, region: "central", county: "Hamilton" },
+                { zip: "46033", town: "Carmel", district: "Carmel Clay Schools", grade: "A+", price: 575, lat: 39.9670, lng: -86.0631, region: "central", county: "Hamilton" },
                 { zip: "46077", town: "Zionsville", district: "Zionsville Community Schools", grade: "A+", price: 650, lat: 39.9509, lng: -86.2619, region: "central", county: "Boone" },
                 { zip: "46321", town: "Munster", district: "School Town of Munster", grade: "A+", price: 325, lat: 41.5645, lng: -87.5125, region: "north", county: "Lake" },
                 { zip: "46038", town: "Fishers", district: "Hamilton Southeastern Schools", grade: "A+", price: 440, lat: 39.9568, lng: -86.0139, region: "central", county: "Hamilton" },
-                { zip: "46074", town: "Westfield", district: "Westfield Washington Schools", grade: "A+", price: 475, lat: 40.0428, lng: -86.1275, region: "central", county: "Hamilton" },
-                { zip: "46060", town: "Noblesville", district: "Noblesville Schools", grade: "A", price: 380, lat: 40.0456, lng: -86.0086, region: "central", county: "Hamilton" },
-                { zip: "47401", town: "Bloomington", district: "Monroe County Community Schools", grade: "A", price: 295, lat: 39.1653, lng: -86.5264, region: "south", county: "Monroe" },
-                { zip: "46033", town: "Carmel", district: "Carmel Clay Schools", grade: "A+", price: 575, lat: 39.9670, lng: -86.0631, region: "central", county: "Hamilton" },
                 { zip: "46037", town: "Fishers", district: "Hamilton Southeastern Schools", grade: "A+", price: 425, lat: 39.9878, lng: -85.9506, region: "central", county: "Hamilton" },
+                { zip: "46074", town: "Westfield", district: "Westfield Washington Schools", grade: "A+", price: 475, lat: 40.0428, lng: -86.1275, region: "central", county: "Hamilton" },
+                { zip: "46075", town: "Whitestown", district: "Zionsville Community Schools", grade: "A+", price: 425, lat: 39.9970, lng: -86.3458, region: "central", county: "Boone" },
+                { zip: "46256", town: "Indianapolis", district: "Carmel Clay Schools", grade: "A+", price: 400, lat: 39.9081, lng: -86.0358, region: "central", county: "Hamilton" },
+                { zip: "46112", town: "Brownsburg", district: "Brownsburg Community Schools", grade: "A+", price: 350, lat: 39.8434, lng: -86.3972, region: "central", county: "Hendricks" },
+                { zip: "46168", town: "Plainfield", district: "Plainfield Community Schools", grade: "A+", price: 310, lat: 39.7042, lng: -86.3994, region: "central", county: "Hendricks" },
+                { zip: "46224", town: "Speedway", district: "School Town of Speedway", grade: "A+", price: 225, lat: 39.7942, lng: -86.2472, region: "central", county: "Marion" },
+                { zip: "46819", town: "Fort Wayne", district: "Northwest Allen County Schools", grade: "A+", price: 375, lat: 41.0186, lng: -85.2206, region: "north", county: "Allen" },
+                // A Districts
+                { zip: "46060", town: "Noblesville", district: "Noblesville Schools", grade: "A", price: 380, lat: 40.0456, lng: -86.0086, region: "central", county: "Hamilton" },
                 { zip: "46062", town: "Noblesville", district: "Noblesville Schools", grade: "A", price: 365, lat: 40.0756, lng: -85.9958, region: "central", county: "Hamilton" },
-                { zip: "46123", town: "Avon", district: "Avon Community School Corp", grade: "A-", price: 340, lat: 39.7628, lng: -86.3997, region: "central", county: "Hendricks" },
-                { zip: "46112", town: "Brownsburg", district: "Brownsburg Community Schools", grade: "A", price: 350, lat: 39.8434, lng: -86.3972, region: "central", county: "Hendricks" },
-                { zip: "46142", town: "Greenwood", district: "Greenwood Community Schools", grade: "A-", price: 290, lat: 39.6137, lng: -86.1066, region: "central", county: "Johnson" },
-                { zip: "46168", town: "Plainfield", district: "Plainfield Community Schools", grade: "A-", price: 310, lat: 39.7042, lng: -86.3994, region: "central", county: "Hendricks" },
+                { zip: "47401", town: "Bloomington", district: "Monroe County Community Schools", grade: "A", price: 295, lat: 39.1653, lng: -86.5264, region: "south", county: "Monroe" },
                 { zip: "46307", town: "Crown Point", district: "Crown Point Community Schools", grade: "A", price: 350, lat: 41.4170, lng: -87.3653, region: "north", county: "Lake" },
                 { zip: "46311", town: "Dyer", district: "Lake Central School Corp", grade: "A", price: 295, lat: 41.4942, lng: -87.5217, region: "north", county: "Lake" },
                 { zip: "46373", town: "St. John", district: "Lake Central School Corp", grade: "A", price: 375, lat: 41.4500, lng: -87.4700, region: "north", county: "Lake" },
                 { zip: "46375", town: "Schererville", district: "Lake Central School Corp", grade: "A", price: 315, lat: 41.4789, lng: -87.4548, region: "north", county: "Lake" },
-                { zip: "46322", town: "Highland", district: "School Town of Highland", grade: "B+", price: 225, lat: 41.5536, lng: -87.4517, region: "north", county: "Lake" },
+                { zip: "46530", town: "Granger", district: "Penn-Harris-Madison School Corp", grade: "A", price: 320, lat: 41.7337, lng: -86.1229, region: "north", county: "St. Joseph" },
+                { zip: "46545", town: "Mishawaka", district: "Penn-Harris-Madison School Corp", grade: "A", price: 225, lat: 41.6620, lng: -86.1586, region: "north", county: "St. Joseph" },
+                { zip: "46804", town: "Fort Wayne", district: "Southwest Allen County Schools", grade: "A", price: 350, lat: 41.0469, lng: -85.2206, region: "north", county: "Allen" },
+                { zip: "46845", town: "Fort Wayne", district: "Southwest Allen County Schools", grade: "A", price: 375, lat: 41.1728, lng: -85.0519, region: "north", county: "Allen" },
+                { zip: "47150", town: "New Albany", district: "New Albany-Floyd County Schools", grade: "A", price: 250, lat: 38.3107, lng: -85.8241, region: "south", county: "Floyd" },
+                { zip: "46122", town: "Danville", district: "Danville Community School Corp", grade: "A", price: 300, lat: 39.7606, lng: -86.5264, region: "central", county: "Hendricks" },
+                { zip: "46143", town: "Greenwood", district: "Center Grove Community Schools", grade: "A", price: 340, lat: 39.6015, lng: -86.0836, region: "central", county: "Johnson" },
+                { zip: "46184", town: "Whiteland", district: "Center Grove Community Schools", grade: "A", price: 310, lat: 39.5501, lng: -86.0797, region: "central", county: "Johnson" },
+                { zip: "46176", town: "Shelbyville", district: "Shelbyville Central Schools", grade: "A", price: 225, lat: 39.5217, lng: -85.7769, region: "central", county: "Shelby" },
+                { zip: "46131", town: "Franklin", district: "Franklin Community School Corp", grade: "A", price: 280, lat: 39.4806, lng: -86.0550, region: "central", county: "Johnson" },
+                { zip: "46107", town: "Beech Grove", district: "Beech Grove City Schools", grade: "A", price: 200, lat: 39.7217, lng: -86.0900, region: "central", county: "Marion" },
+                { zip: "46526", town: "Elkhart", district: "Concord Community Schools", grade: "A", price: 250, lat: 41.6939, lng: -85.9767, region: "north", county: "Elkhart" },
+                { zip: "46514", town: "Elkhart", district: "Elkhart Community Schools", grade: "A", price: 200, lat: 41.6820, lng: -85.9767, region: "north", county: "Elkhart" },
+                { zip: "46516", town: "Elkhart", district: "Baugo Community Schools", grade: "A", price: 225, lat: 41.6500, lng: -85.9200, region: "north", county: "Elkhart" },
+                { zip: "46580", town: "Warsaw", district: "Warsaw Community Schools", grade: "A", price: 250, lat: 41.2381, lng: -85.8531, region: "north", county: "Kosciusko" },
+                { zip: "46526", town: "Goshen", district: "Goshen Community Schools", grade: "A", price: 240, lat: 41.5823, lng: -85.8345, region: "north", county: "Elkhart" },
+                { zip: "46201", town: "Indianapolis", district: "Indianapolis Public Schools", grade: "A", price: 175, lat: 39.7756, lng: -86.1089, region: "central", county: "Marion" },
+                // A- Districts
+                { zip: "46123", town: "Avon", district: "Avon Community School Corp", grade: "A-", price: 340, lat: 39.7628, lng: -86.3997, region: "central", county: "Hendricks" },
+                { zip: "46142", town: "Greenwood", district: "Greenwood Community Schools", grade: "A-", price: 290, lat: 39.6137, lng: -86.1066, region: "central", county: "Johnson" },
                 { zip: "46385", town: "Valparaiso", district: "Valparaiso Community Schools", grade: "A-", price: 285, lat: 41.4731, lng: -87.0611, region: "north", county: "Porter" },
                 { zip: "46304", town: "Chesterton", district: "Duneland School Corp", grade: "A-", price: 320, lat: 41.6106, lng: -87.0642, region: "north", county: "Porter" },
-                { zip: "46140", town: "Greenfield", district: "Greenfield-Central Schools", grade: "B+", price: 275, lat: 39.7851, lng: -85.7694, region: "central", county: "Hancock" },
-                { zip: "46256", town: "Indianapolis", district: "Carmel Clay Schools", grade: "A+", price: 400, lat: 39.9081, lng: -86.0358, region: "central", county: "Hamilton" },
-                { zip: "47905", town: "Lafayette", district: "Lafayette School Corp", grade: "B", price: 215, lat: 40.4167, lng: -86.8753, region: "north", county: "Tippecanoe" },
                 { zip: "46220", town: "Indianapolis", district: "MSD Washington Township", grade: "A-", price: 285, lat: 39.8686, lng: -86.1086, region: "central", county: "Marion" },
                 { zip: "46240", town: "Indianapolis", district: "MSD Washington Township", grade: "A-", price: 375, lat: 39.9081, lng: -86.1458, region: "central", county: "Marion" },
+                { zip: "46902", town: "Kokomo", district: "Kokomo School Corp", grade: "A-", price: 175, lat: 40.4864, lng: -86.1336, region: "north", county: "Howard" },
+                { zip: "46901", town: "Kokomo", district: "Northwestern School Corp", grade: "A-", price: 195, lat: 40.4564, lng: -86.0836, region: "north", county: "Howard" },
+                { zip: "47630", town: "Newburgh", district: "Warrick County Schools", grade: "A-", price: 280, lat: 37.9445, lng: -87.4053, region: "south", county: "Warrick" },
+                { zip: "47712", town: "Evansville", district: "Evansville Vanderburgh Schools", grade: "A-", price: 200, lat: 37.9881, lng: -87.5717, region: "south", county: "Vanderburgh" },
+                { zip: "47201", town: "Columbus", district: "Bartholomew Consolidated Schools", grade: "A-", price: 250, lat: 39.2014, lng: -85.9214, region: "south", county: "Bartholomew" },
+                { zip: "46135", town: "Greencastle", district: "Greencastle Community Schools", grade: "A-", price: 200, lat: 39.6448, lng: -86.8644, region: "central", county: "Putnam" },
+                { zip: "46158", town: "Mooresville", district: "Mooresville Consolidated Schools", grade: "A-", price: 275, lat: 39.6120, lng: -86.3742, region: "central", county: "Morgan" },
+                { zip: "47374", town: "Richmond", district: "Richmond Community Schools", grade: "A-", price: 150, lat: 39.8289, lng: -84.8902, region: "central", county: "Wayne" },
+                { zip: "46350", town: "La Porte", district: "La Porte Community School Corp", grade: "A-", price: 225, lat: 41.6106, lng: -86.7225, region: "north", county: "La Porte" },
+                { zip: "46360", town: "Michigan City", district: "Michigan City Area Schools", grade: "A-", price: 200, lat: 41.7075, lng: -86.8950, region: "north", county: "La Porte" },
+                { zip: "46404", town: "Gary", district: "Gary Community School Corp", grade: "A-", price: 95, lat: 41.6006, lng: -87.3364, region: "north", county: "Lake" },
+                // B+ Districts
+                { zip: "46322", town: "Highland", district: "School Town of Highland", grade: "B+", price: 225, lat: 41.5536, lng: -87.4517, region: "north", county: "Lake" },
+                { zip: "46140", town: "Greenfield", district: "Greenfield-Central Schools", grade: "B+", price: 275, lat: 39.7851, lng: -85.7694, region: "central", county: "Hancock" },
                 { zip: "46250", town: "Indianapolis", district: "MSD Lawrence Township", grade: "B+", price: 265, lat: 39.9081, lng: -86.0358, region: "central", county: "Marion" },
-                { zip: "46075", town: "Whitestown", district: "Zionsville Community Schools", grade: "A+", price: 425, lat: 39.9970, lng: -86.3458, region: "central", county: "Boone" },
-                { zip: "47630", town: "Newburgh", district: "Warrick County Schools", grade: "A-", price: 280, lat: 37.9445, lng: -87.4053, region: "south", county: "Warrick" }
+                { zip: "47905", town: "Lafayette", district: "Lafayette School Corp", grade: "B+", price: 215, lat: 40.4167, lng: -86.8753, region: "north", county: "Tippecanoe" },
+                { zip: "46312", town: "East Chicago", district: "East Chicago Urban Enterprise", grade: "B+", price: 125, lat: 41.6392, lng: -87.4547, region: "north", county: "Lake" },
+                { zip: "46323", town: "Hammond", district: "Hammond School City", grade: "B+", price: 175, lat: 41.5833, lng: -87.5000, region: "north", county: "Lake" },
+                { zip: "46410", town: "Merrillville", district: "Merrillville Community Schools", grade: "B+", price: 225, lat: 41.4828, lng: -87.3328, region: "north", county: "Lake" },
+                { zip: "46342", town: "Hobart", district: "Hobart School City", grade: "B+", price: 200, lat: 41.5322, lng: -87.2550, region: "north", county: "Lake" },
+                { zip: "46628", town: "South Bend", district: "South Bend Community Schools", grade: "B+", price: 175, lat: 41.6769, lng: -86.2692, region: "north", county: "St. Joseph" },
+                { zip: "46614", town: "South Bend", district: "South Bend Community Schools", grade: "B+", price: 200, lat: 41.6400, lng: -86.2500, region: "north", county: "St. Joseph" },
+                { zip: "46052", town: "Lebanon", district: "Lebanon Community School Corp", grade: "B+", price: 250, lat: 40.0484, lng: -86.4692, region: "central", county: "Boone" },
+                { zip: "46151", town: "Martinsville", district: "MSD Martinsville Schools", grade: "B+", price: 225, lat: 39.4278, lng: -86.4283, region: "central", county: "Morgan" },
+                { zip: "47304", town: "Muncie", district: "Muncie Community Schools", grade: "B+", price: 150, lat: 40.2028, lng: -85.3864, region: "central", county: "Delaware" },
+                { zip: "47303", town: "Muncie", district: "Muncie Community Schools", grade: "B+", price: 160, lat: 40.1756, lng: -85.3714, region: "central", county: "Delaware" },
+                { zip: "46016", town: "Anderson", district: "Anderson Community Schools", grade: "B+", price: 125, lat: 40.1053, lng: -85.6803, region: "central", county: "Madison" },
+                { zip: "47802", town: "Terre Haute", district: "Vigo County School Corp", grade: "B+", price: 150, lat: 39.4181, lng: -87.4139, region: "south", county: "Vigo" },
+                // B Districts  
+                { zip: "46802", town: "Fort Wayne", district: "Fort Wayne Community Schools", grade: "B", price: 175, lat: 41.0793, lng: -85.1394, region: "north", county: "Allen" },
+                { zip: "46805", town: "Fort Wayne", district: "Fort Wayne Community Schools", grade: "B", price: 185, lat: 41.0958, lng: -85.1236, region: "north", county: "Allen" },
+                { zip: "46227", town: "Indianapolis", district: "Perry Township Schools", grade: "B", price: 225, lat: 39.6756, lng: -86.1089, region: "central", county: "Marion" },
+                { zip: "46237", town: "Indianapolis", district: "Franklin Township Schools", grade: "B", price: 250, lat: 39.6500, lng: -86.0000, region: "central", county: "Marion" },
+                { zip: "46217", town: "Indianapolis", district: "Decatur Township Schools", grade: "B", price: 200, lat: 39.6756, lng: -86.2389, region: "central", county: "Marion" },
+                { zip: "46241", town: "Indianapolis", district: "Wayne Township Schools", grade: "B", price: 175, lat: 39.7389, lng: -86.2750, region: "central", county: "Marion" },
+                { zip: "46218", town: "Indianapolis", district: "MSD Warren Township", grade: "B", price: 165, lat: 39.8186, lng: -86.0619, region: "central", county: "Marion" },
+                { zip: "46226", town: "Indianapolis", district: "MSD Warren Township", grade: "B", price: 175, lat: 39.8456, lng: -86.0358, region: "central", county: "Marion" },
+                { zip: "46268", town: "Indianapolis", district: "Pike Township Schools", grade: "B", price: 225, lat: 39.8686, lng: -86.2389, region: "central", county: "Marion" },
+                { zip: "47708", town: "Evansville", district: "Evansville Vanderburgh Schools", grade: "B", price: 175, lat: 37.9747, lng: -87.5558, region: "south", county: "Vanderburgh" }
             ]
         };
-
         let currentState = 'NJ';
         let map;
         let markers = [];
-        let activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 200, maxPrice: 1500, region: 'all', search: '' };
-
+        let activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 150, maxPrice: 1500, region: 'all', search: '' };
         function initMap() {
             const config = stateConfigs[currentState];
             map = L.map('map').setView(config.center, config.zoom);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap © CARTO',
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19 }).addTo(map);
         }
-
         function switchState(state) {
             currentState = state;
             const config = stateConfigs[state];
@@ -794,7 +346,6 @@
             updateMarkers();
             updateStats();
         }
-
         function updateRegionChips() {
             const config = stateConfigs[currentState];
             const container = document.getElementById('regionChips');
@@ -810,42 +361,29 @@
                 });
             });
         }
-
         function updateStats() {
             var districts = districtData[currentState];
             document.getElementById('districtCount').textContent = districts.length;
             var avgPrice = Math.round(districts.reduce(function(sum, d) { return sum + d.price; }, 0) / districts.length);
             document.getElementById('avgPrice').textContent = avgPrice >= 1000 ? '$' + (avgPrice/1000).toFixed(1) + 'M' : '$' + avgPrice + 'K';
         }
-
         function createMarker(d) {
             var gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
-            var icon = L.divIcon({
-                className: 'custom-marker',
-                html: '<div class="marker-pin grade-' + gc + '"><span class="marker-label">' + d.grade + '</span></div>',
-                iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28]
-            });
+            var icon = L.divIcon({ className: 'custom-marker', html: '<div class="marker-pin grade-' + gc + '"><span class="marker-label">' + d.grade + '</span></div>', iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -28] });
             var marker = L.marker([d.lat, d.lng], { icon: icon }).bindPopup(createPopup(d));
             marker.districtData = d;
             return marker;
         }
-
         function createPopup(d) {
             var gc = d.grade.replace('+', 'plus').replace('-', 'minus').toLowerCase();
             var price = d.price >= 1000 ? '$' + (d.price/1000).toFixed(1) + 'M' : '$' + d.price + 'K';
             return '<div class="popup-content"><div class="popup-header"><span class="popup-town">' + d.town + '</span><span class="popup-grade grade-' + gc + '">' + d.grade + '</span></div><div class="popup-details"><div class="popup-row"><span class="popup-label">District</span><span class="popup-value">' + d.district + '</span></div><div class="popup-row"><span class="popup-label">ZIP Code</span><span class="popup-value">' + d.zip + '</span></div><div class="popup-row"><span class="popup-label">County</span><span class="popup-value">' + d.county + '</span></div><div class="popup-row"><span class="popup-label">Median Home</span><span class="popup-value price">' + price + '</span></div></div></div>';
         }
-
         function filterDistricts() {
             return districtData[currentState].filter(function(d) {
-                return activeFilters.grades.indexOf(d.grade) !== -1 &&
-                    d.price >= activeFilters.minPrice && d.price <= activeFilters.maxPrice &&
-                    (activeFilters.region === 'all' || d.region === activeFilters.region) &&
-                    (activeFilters.search === '' || d.town.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1 ||
-                     d.zip.indexOf(activeFilters.search) !== -1 || d.district.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1);
+                return activeFilters.grades.indexOf(d.grade) !== -1 && d.price >= activeFilters.minPrice && d.price <= activeFilters.maxPrice && (activeFilters.region === 'all' || d.region === activeFilters.region) && (activeFilters.search === '' || d.town.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1 || d.zip.indexOf(activeFilters.search) !== -1 || d.district.toLowerCase().indexOf(activeFilters.search.toLowerCase()) !== -1);
             });
         }
-
         function sortDistricts(arr, by) {
             var go = { 'A+': 1, 'A': 2, 'A-': 3, 'B+': 4, 'B': 5 };
             var sorted = arr.slice();
@@ -855,7 +393,6 @@
             else if (by === 'name') sorted.sort(function(a, b) { return a.town.localeCompare(b.town); });
             return sorted;
         }
-
         function updateMarkers() {
             markers.forEach(function(m) { map.removeLayer(m); });
             markers = [];
@@ -864,7 +401,6 @@
             document.getElementById('resultsCount').textContent = filtered.length;
             updateResultsList(filtered);
         }
-
         function updateResultsList(districts) {
             var sorted = sortDistricts(districts, document.getElementById('sortSelect').value);
             var container = document.getElementById('resultsList');
@@ -882,20 +418,17 @@
                 });
             });
         }
-
         function updatePriceTrack() {
             var min = parseInt(document.getElementById('minPrice').value);
             var max = parseInt(document.getElementById('maxPrice').value);
             var track = document.getElementById('rangeTrack');
-            var minP = ((min - 200) / 1300) * 100;
-            var maxP = ((max - 200) / 1300) * 100;
+            var minP = ((min - 150) / 1350) * 100;
+            var maxP = ((max - 150) / 1350) * 100;
             track.style.left = minP + '%';
             track.style.width = (maxP - minP) + '%';
             document.getElementById('minPriceDisplay').textContent = min >= 1000 ? '$' + (min/1000).toFixed(1) + 'M' : '$' + min + 'K';
             document.getElementById('maxPriceDisplay').textContent = max >= 1500 ? '$1.5M+' : (max >= 1000 ? '$' + (max/1000).toFixed(1) + 'M' : '$' + max + 'K');
         }
-
-        // Event Listeners
         document.querySelectorAll('.state-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.state-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -903,7 +436,6 @@
                 switchState(btn.dataset.state);
             });
         });
-
         document.querySelectorAll('.grade-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 btn.classList.toggle('active');
@@ -913,28 +445,24 @@
                 updateMarkers();
             });
         });
-
         document.getElementById('minPrice').addEventListener('input', function(e) {
             var min = parseInt(e.target.value), max = parseInt(document.getElementById('maxPrice').value);
             if (min > max) { document.getElementById('maxPrice').value = min; max = min; }
             activeFilters.minPrice = min; activeFilters.maxPrice = max;
             updatePriceTrack(); updateMarkers();
         });
-
         document.getElementById('maxPrice').addEventListener('input', function(e) {
             var max = parseInt(e.target.value), min = parseInt(document.getElementById('minPrice').value);
             if (max < min) { document.getElementById('minPrice').value = max; min = max; }
             activeFilters.minPrice = min; activeFilters.maxPrice = max;
             updatePriceTrack(); updateMarkers();
         });
-
         document.getElementById('searchInput').addEventListener('input', function(e) { activeFilters.search = e.target.value; updateMarkers(); });
         document.getElementById('sortSelect').addEventListener('change', function() { updateResultsList(filterDistricts()); });
-
         document.getElementById('resetFilters').addEventListener('click', function() {
-            activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 200, maxPrice: 1500, region: 'all', search: '' };
+            activeFilters = { grades: ['A+', 'A', 'A-', 'B+', 'B'], minPrice: 150, maxPrice: 1500, region: 'all', search: '' };
             document.querySelectorAll('.grade-btn').forEach(function(btn) { btn.classList.add('active'); });
-            document.getElementById('minPrice').value = 200;
+            document.getElementById('minPrice').value = 150;
             document.getElementById('maxPrice').value = 1500;
             updatePriceTrack();
             document.querySelectorAll('.region-chip').forEach(function(c) { c.classList.remove('active'); });
@@ -945,8 +473,6 @@
             map.setView(config.center, config.zoom);
             updateMarkers();
         });
-
-        // Initialize
         initMap();
         updateRegionChips();
         updatePriceTrack();
